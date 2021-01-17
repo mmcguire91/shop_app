@@ -13,6 +13,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Shop',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        primaryColor: Color.fromRGBO(134, 232, 118, 1),
+        accentColor: Color.fromRGBO(192, 199, 210, 1),
+        fontFamily: 'Lato',
       ),
       home: CatalogDisplayScreen(),
     );
