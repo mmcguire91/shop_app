@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../screens/product_detail_screen.dart';
+
 class ProductItem extends StatelessWidget {
   ProductItem({
     this.id,
@@ -18,14 +20,26 @@ class ProductItem extends StatelessWidget {
       //ClipRRect stands for clip rounded rectangles
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        child: Image.network(
-          imageURL,
-          fit: BoxFit.cover,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              ProductDetailScreen.routeName,
+              arguments: id,
+              //forward the ID of the given item the user taps on in order to display the relevant next page
+            );
+          },
+          child: Image.network(
+            imageURL,
+            fit: BoxFit.cover,
+          ),
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
           leading: IconButton(
-            icon: Icon(Icons.favorite),
+            icon: Icon(
+              Icons.favorite,
+              color: Colors.red,
+            ),
             onPressed: () {},
           ),
           title: Text(
