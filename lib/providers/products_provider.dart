@@ -44,6 +44,11 @@ class ProductsProvider with ChangeNotifier {
     //... is a speread operator. It copies the array that proceeds it
   }
 
+  Product findByID(String id) {
+    return _items.firstWhere((product) => product.id == id);
+  }
+  //by the user clicking on a specific product it will identify the productID and all information associated with that product
+
   void addProduct() {
     // _items.add(value);
     notifyListeners();
