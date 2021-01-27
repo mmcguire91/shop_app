@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/products_provider.dart';
+import '../models/products_provider.dart';
 import 'product_item.dart';
+
+//this is the content of the catalog display screen
 
 class Catalog extends StatelessWidget {
   @override
@@ -27,10 +29,13 @@ class Catalog extends StatelessWidget {
       ),
       itemCount: products.length,
       itemBuilder: (ctx, index) {
-        return ProductItem(
-          id: products[index].id,
-          title: products[index].title,
-          imageURL: products[index].imageURL,
+        return ChangeNotifierProvider(
+          create: (context) => products[index],
+          child: ProductItem(
+              // id: products[index].id,
+              // title: products[index].title,
+              // imageURL: products[index].imageURL,
+              ),
         );
         //populate the ProductItem widget with data retrieved from the provider
       },
