@@ -29,8 +29,16 @@ class Catalog extends StatelessWidget {
       ),
       itemCount: products.length,
       itemBuilder: (ctx, index) {
-        return ChangeNotifierProvider(
-          create: (context) => products[index],
+        return ChangeNotifierProvider.value(
+          value: products[index],
+          /*
+          - ChangeNotifierProvider.value is appropriate to use when a Provider is used on a list or a grid so the entire widget is not rebuilt
+          - In .value the Provider is specifically tied to its data and detached from the widget
+          - Should be used when you have the Provider package and you're providing data on single List or Grid items
+          - If we used builder it would cause bugs as soon as we have items that go beyond the screen boundries because of the way widgets are recycled and data changes, Provider would be unable to keep up with all changes--> .value will keep up
+          - .value here is useful because we are actually reusing the object that has been established in main.dart
+          - if we use a screen that replaces another screen it's important that we clean up our provided data because if we don't the data will be stored within the app itself and lead to memory overflow --> ChangeNotifierProvider does this regardless of if you use the builder / create method or .value
+          */
           child: ProductItem(
               // id: products[index].id,
               // title: products[index].title,
