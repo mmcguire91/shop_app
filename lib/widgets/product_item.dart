@@ -7,16 +7,6 @@ import '../models/product_model.dart';
 //product_item.dart is the widget that holds the content of each product item within the gridview on the catalog_display_screen
 
 class ProductItem extends StatelessWidget {
-  // ProductItem({
-  //   this.id,
-  //   this.title,
-  //   this.imageURL,
-  // });
-
-  // final String id;
-  // final String title;
-  // final String imageURL;
-
   @override
   Widget build(BuildContext context) {
     final product = Provider.of<Product>(context, listen: false);
@@ -45,11 +35,6 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Colors.black54,
           leading: Consumer<Product>(
             builder: (ctx, product, _) => IconButton(
-              /*
-              - Consumer performs the same function of Provider.of where it listens for updates
-              - Consumer is valuable to use in scenarios where you don't want your entire widget tree rebuilding, solely the items wrapped within the Consumer widget
-              - Within this widget we are only expecting our favorite icon to update, thus we are limiting the rebuild of the widget tree to solely the favorite icon by wrapping it in Consumer.
-              */
               icon: Icon(
                 product.isFavorite ? Icons.favorite : Icons.favorite_border,
                 //change the status of the UI for the favorite icon according to the isFavorite method
@@ -61,6 +46,11 @@ class ProductItem extends StatelessWidget {
               },
             ),
           ),
+          /*
+          - Consumer performs the same function of Provider.of where it listens for updates
+          - Consumer is valuable to use in scenarios where you don't want your entire widget tree rebuilding, solely the items wrapped within the Consumer widget
+          - Within this widget we are only expecting our favorite icon to update, thus we are limiting the rebuild of the widget tree to solely the favorite icon by wrapping it in Consumer.
+          */
           title: Text(
             product.title,
             textAlign: TextAlign.center,

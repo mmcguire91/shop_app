@@ -7,6 +7,10 @@ import 'product_item.dart';
 //this is the content of the catalog display screen
 
 class Catalog extends StatelessWidget {
+  Catalog(this.showFavorites);
+  final bool showFavorites;
+  //initializing and accepting the _showOnlyFavorites variable from CatalogDisplayScreen
+
   @override
   Widget build(BuildContext context) {
     final productsData = Provider.of<ProductsProvider>(context);
@@ -17,8 +21,10 @@ class Catalog extends StatelessWidget {
     (catalog.dart --> catalog_display_screen.dart --> main.dart) [Provider for ProductsProvider is established within the ChangeNotifierProvider at the top of the widget tree in main.dart]
     whenever a change occurs the children widget affected will be rebuilt
     */
-    final products = productsData.items;
+    final products =
+        showFavorites ? productsData.favoriteItems : productsData.items;
     //retrieve the data from the items within the ProductsProvider class
+    //return showfavorites according to if the favorite items
     return GridView.builder(
       padding: const EdgeInsets.all(10),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

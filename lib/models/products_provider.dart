@@ -46,6 +46,12 @@ class ProductsProvider with ChangeNotifier {
     //... is a speread operator. It copies the array that proceeds it
   }
 
+  List<Product> get favoriteItems {
+    return _items.where((prodItems) => prodItems.isFavorite).toList();
+  }
+//retrieve the items that have been marked as favorite
+//.isFavorite method is defind in product_model.dart
+
   Product findByID(String id) {
     return _items.firstWhere((product) => product.id == id);
   }
