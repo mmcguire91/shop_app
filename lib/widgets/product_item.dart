@@ -19,8 +19,9 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
     //retrieve the product data from the Provider of type <Product>
+    //establishing this as listen:false because at this point the only thing that will need rebuilding / updating within this widget is the favorite icon. --> All other information will be retrieved once and is not expected to update
 
     return ClipRRect(
       //ClipRRect forces the child to adhere to speceific defined styling properties
@@ -42,16 +43,23 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black54,
-          leading: IconButton(
-            icon: Icon(
-              product.isFavorite ? Icons.favorite : Icons.favorite_border,
-              //change the status of the UI for the favorite icon according to the isFavorite method
-              color: Colors.red,
+          leading: Consumer<Product>(
+            builder: (ctx, product, _) => IconButton(
+              /*
+              - Consumer performs the same function of Provider.of where it listens for updates
+              - Consumer is valuable to use in scenarios where you don't want your entire widget tree rebuilding, solely the items wrapped within the Consumer widget
+              - Within this widget we are only expecting our favorite icon to update, thus we are limiting the rebuild of the widget tree to solely the favorite icon by wrapping it in Consumer.
+              */
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                //change the status of the UI for the favorite icon according to the isFavorite method
+                color: Colors.red,
+              ),
+              onPressed: () {
+                product.toggleFavoriteStatus();
+                //onPressed toggle the status of the void method toggleFavoriteStatus established in product_model.dart
+              },
             ),
-            onPressed: () {
-              product.toggleFavoriteStatus();
-              //onPressed toggle the status of the void method toggleFavoriteStatus established in product_model.dart
-            },
           ),
           title: Text(
             product.title,
