@@ -33,7 +33,7 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
                   _showOnlyFavorites = false;
                 }
               });
-              //update the UI according to the user selections
+              //update the UI according to the user selection of favorites
             },
             icon: Icon(
               Icons.more_vert,
