@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/catalog_display_screen.dart';
 import './screens/product_detail_screen.dart';
 import 'models/products_provider.dart';
+import 'models/cart.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,10 +13,19 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => ProductsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => Cart(),
+        ),
+      ],
       //establish the ChangeNotifierProvider in as high as the app hierarchy as possible in order to transmit the data / Notify the listeners further down in the app hierarchy whenever they call the listener method
       //only the widgets that are listening will be rebuilt
-      create: (ctx) => ProductsProvider(),
+      //we've established an additional ChangeNotifierProvider as we'll need to notify multiple changes further down the hierarchy
+      //to establish multiple ChangeNotifierProvider we've refactored our code to a MultiProvider
       /*
       - here the proper method is to use the defualt builder / create method because we are initializing the class 
       - .value is more useful when we're actually calling on an already established object

@@ -36,7 +36,7 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
               //update the UI according to the user selection of favorites
             },
             icon: Icon(
-              Icons.more_vert,
+              Icons.filter_alt,
             ),
             itemBuilder: (_) => [
               PopupMenuItem(
