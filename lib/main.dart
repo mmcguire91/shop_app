@@ -38,7 +38,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           primaryColor: Colors.blue,
           // Color.fromRGBO(134, 232, 118, 1), similar to mint green
-          accentColor: Color.fromRGBO(192, 199, 210, 1),
+          accentColor: Colors.white,
+          // Color.fromRGBO(192, 199, 210, 1), //grey
           fontFamily: 'Lato',
         ),
         home: CatalogDisplayScreen(),

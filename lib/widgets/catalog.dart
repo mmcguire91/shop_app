@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/products_provider.dart';
 import 'product_item.dart';
 
-//this is the content of the catalog display screen
+//catalog.dart is the content of the catalog display screen
 
 class Catalog extends StatelessWidget {
   Catalog(this.showFavorites);

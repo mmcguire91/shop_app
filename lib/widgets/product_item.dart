@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/product_detail_screen.dart';
+import '../models/cart.dart';
 import '../models/product_model.dart';
 
 //product_item.dart is the widget that holds the content of each product item within the gridview on the catalog_display_screen
@@ -12,6 +13,9 @@ class ProductItem extends StatelessWidget {
     final product = Provider.of<Product>(context, listen: false);
     //retrieve the product data from the Provider of type <Product>
     //establishing this as listen:false because at this point the only thing that will need rebuilding / updating within this widget is the favorite icon. --> All other information will be retrieved once and is not expected to update
+
+    final cart = Provider.of<Cart>(context, listen: false);
+    //retrieve the cart data from the Provider of type <Cart>
 
     return ClipRRect(
       //ClipRRect forces the child to adhere to speceific defined styling properties
@@ -57,7 +61,10 @@ class ProductItem extends StatelessWidget {
           ),
           trailing: IconButton(
             icon: Icon(Icons.shopping_cart),
-            onPressed: () {},
+            onPressed: () {
+              cart.addItem(product.id, product.price, product.title);
+            },
+            //on pressed, add the properties of the product to the cart
             color: Theme.of(context).accentColor,
           ),
         ),

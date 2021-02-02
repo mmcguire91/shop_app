@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
+//cart.dart establishes the logic associated with the cart
+
 class CartItem {
   CartItem({
     @required this.id,
@@ -16,12 +18,17 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  Map<String, CartItem> _items;
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items {
     return {..._items};
   }
   //return a copy of private class _items
+
+  int get itemCount {
+    return _items.length;
+  }
+//retrieve a count of items in cart
 
   void addItem(String productID, double price, String title) {
     if (_items.containsKey(productID)) {
@@ -47,5 +54,6 @@ class Cart with ChangeNotifier {
       );
       //if the item (determined by the productID) is absent from the cart, add the item and its properties to the cart
     }
+    notifyListeners();
   }
 }

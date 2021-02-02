@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/catalog.dart';
+import '../widgets/badge.dart';
+import '../models/cart.dart';
 
-//this is the screen which displays all products for selection
+//catalog_disply_screen.dart is the screen which displays all products for selection
 
 enum FilterOptions {
   Favorites,
@@ -48,6 +51,18 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
                 value: FilterOptions.AllItems,
               ),
             ],
+          ),
+          Consumer<Cart>(
+            builder: (_, cart, ch) => Badge(
+              child: ch,
+              value: cart.itemCount.toString(),
+            ),
+            //setting up the listener of the consumer as the badge becuase this is the data we want to update => cart item count is updating
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+            //the IconButton itself will not update and stay consistent as only the badge with the cart item count is updating
           ),
         ],
       ),
