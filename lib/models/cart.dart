@@ -30,6 +30,18 @@ class Cart with ChangeNotifier {
   }
 //retrieve a count of items in cart
 
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, cartItem) {
+      total += cartItem.quantity * cartItem.price;
+    });
+    return total;
+  }
+  /*
+  calculate cart total
+  - go through all entries in the _items map, retrieve the key and value for each entry
+  */
+
   void addItem(String productID, double price, String title) {
     if (_items.containsKey(productID)) {
       _items.update(

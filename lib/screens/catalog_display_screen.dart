@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './cart_screen.dart';
+
 import '../widgets/catalog.dart';
 import '../widgets/badge.dart';
 import '../models/cart.dart';
@@ -60,7 +62,9 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
             //setting up the listener of the consumer as the badge becuase this is the data we want to update => cart item count is updating
             child: IconButton(
               icon: Icon(Icons.shopping_cart),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed('/cart');
+              },
             ),
             //the IconButton itself will not update and stay consistent as only the badge with the cart item count is updating
           ),
