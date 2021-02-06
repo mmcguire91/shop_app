@@ -31,7 +31,7 @@ class Cart with ChangeNotifier {
 //retrieve a count of items in cart
 
   double get totalAmount {
-    double total = 0.0;
+    double total = 0.00;
     _items.forEach((key, cartItem) {
       total += cartItem.quantity * cartItem.price;
     });
@@ -40,6 +40,7 @@ class Cart with ChangeNotifier {
   /*
   calculate cart total
   - go through all entries in the _items map, retrieve the key and value for each entry
+  - multiply the quantity of each item in cart by that specific item's price, and add that back to the total
   */
 
   void addItem(String productID, double price, String title) {
