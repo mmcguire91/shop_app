@@ -29,10 +29,12 @@ class CartScreen extends StatelessWidget {
               shrinkWrap: true,
               itemCount: cart.items.length,
               itemBuilder: (ctx, index) => CartItem(
-                  id: cart.items.values.toList()[index].id,
-                  price: cart.items.values.toList()[index].price,
-                  quantity: cart.items.values.toList()[index].quantity,
-                  title: cart.items.values.toList()[index].title),
+                id: cart.items.values.toList()[index].id,
+                price: cart.items.values.toList()[index].price,
+                quantity: cart.items.values.toList()[index].quantity,
+                title: cart.items.values.toList()[index].title,
+                productID: cart.items.keys.toList()[index],
+              ),
             ),
           ),
           Card(
