@@ -32,7 +32,7 @@ class ProductsProvider with ChangeNotifier {
     ),
     Product(
       id: 'p4',
-      title: 'A Pan',
+      title: 'Cast Iron Pan',
       description: 'Prepare any meal you want.',
       price: 49.99,
       imageURL:

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/cart.dart';
-import '../models/product_model.dart';
+import '../models/products_provider.dart';
 
 //this is the widget of the individual cart items
-
-//DESIRED ENHANCEMENT: Modify the circle avatar to show the product image that would be inherited from the pProduct Provider
 
 class CartItem extends StatelessWidget {
   CartItem({this.id, this.price, this.quantity, this.title, this.productID});
@@ -18,7 +16,8 @@ class CartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final product = Provider.of<Product>(context, listen: false);
+    final product = Provider.of<ProductsProvider>(context, listen: false)
+        .findByID(productID);
     return Dismissible(
       key: ValueKey(id),
       background: Container(
@@ -52,20 +51,10 @@ class CartItem extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: ListTile(
             leading: CircleAvatar(
-              // backgroundImage: NetworkImage(product.imageURL),
-              backgroundColor: Theme.of(context).primaryColor,
-              child: FittedBox(
-                child: Text(
-                  '\$$price',
-                  style: TextStyle(
-                      color: Theme.of(context).accentColor,
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
+              backgroundImage: NetworkImage(product.imageURL),
             ),
-            //Image.network(product.imageURL),
             title: Text(title),
-            subtitle: Text('x $quantity'),
+            subtitle: Text('\$$price x $quantity'),
             trailing: Text('Total: \$${(quantity * price)}'),
           ),
         ),
