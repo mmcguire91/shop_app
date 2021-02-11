@@ -7,6 +7,7 @@ import './screens/cart_screen.dart';
 
 import 'models/products_provider.dart';
 import 'models/cart.dart';
+import 'models/orders.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => Orders(),
+        )
       ],
       //establish the ChangeNotifierProvider in as high as the app hierarchy as possible in order to transmit the data / Notify the listeners further down in the app hierarchy whenever they call the listener method
       //only the widgets that are listening will be rebuilt

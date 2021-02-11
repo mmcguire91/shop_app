@@ -24,6 +24,7 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
   //return a copy of private class _items
+  //establishing so that we can't make any modifications to the private class
 
   int get itemCount {
     return _items.length;
@@ -74,5 +75,11 @@ class Cart with ChangeNotifier {
     _items.remove(productID);
     notifyListeners();
   }
-  //remove an item from the map of _items
+  //remove an item from the map of _items to remove the item with the given productID from the cart
+
+  void clearCart() {
+    _items = {};
+    notifyListeners();
+  }
+  //remove all items from the map of _items to empty the cart
 }
