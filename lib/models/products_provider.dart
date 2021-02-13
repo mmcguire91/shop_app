@@ -16,7 +16,7 @@ class ProductsProvider with ChangeNotifier {
     ),
     Product(
       id: 'p2',
-      title: 'Trousers',
+      title: 'Not Levi\'s jeans',
       description: 'A nice pair of trousers.',
       price: 59.99,
       imageURL:

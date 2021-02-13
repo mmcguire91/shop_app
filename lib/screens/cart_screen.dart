@@ -6,6 +6,7 @@ import '../models/cart.dart' show Cart;
 //we are doing this because there is also another CartItem class established in cart.dart
 
 import '../widgets/cart_item.dart';
+import '../models/orders.dart';
 
 //this is the screen for the Cart page
 
@@ -55,7 +56,15 @@ class CartScreen extends StatelessWidget {
                   FlatButton(
                     child: Text('order now'.toUpperCase()),
                     textColor: Theme.of(context).primaryColor,
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<Orders>(context, listen: false).addOrders(
+                        cart.items.values.toList(),
+                        cart.totalAmount,
+                      );
+                      //convert cart item objects into a list of cart item objects and execute the addOrder function established in orders.dart
+                      cart.clearCart();
+                      //empty the cart
+                    },
                   ),
                 ],
               ),
