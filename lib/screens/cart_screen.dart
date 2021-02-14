@@ -64,6 +64,7 @@ class CartScreen extends StatelessWidget {
                       //convert cart item objects into a list of cart item objects and execute the addOrder function established in orders.dart
                       cart.clearCart();
                       //empty the cart
+                      Navigator.of(context).pushNamed('/orders');
                     },
                   ),
                 ],
