@@ -6,6 +6,7 @@ import './cart_screen.dart';
 import '../widgets/catalog.dart';
 import '../widgets/badge.dart';
 import '../models/cart.dart';
+import '../widgets/side_drawer.dart';
 
 //catalog_disply_screen.dart is the screen which displays all products for selection
 
@@ -70,6 +71,7 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
           ),
         ],
       ),
+      drawer: SideDrawer(),
       body: Catalog(_showOnlyFavorites),
     );
   }

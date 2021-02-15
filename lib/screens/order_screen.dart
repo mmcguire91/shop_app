@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/orders.dart';
 
 import '../widgets/order_card.dart';
+import '../widgets/side_drawer.dart';
 
 //OrderScreen displays the user's order
 
@@ -24,6 +25,7 @@ class OrdersScreen extends StatelessWidget {
         //populate the order card UI element with data provided by the orders method within orders.dart
         //this data is retrieved by calling the provider of type orders
       ),
+      drawer: SideDrawer(),
     );
   }
 }
