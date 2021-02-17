@@ -32,21 +32,21 @@ class SideDrawer extends StatelessWidget {
           title: Text('Menu'),
           automaticallyImplyLeading: false,
         ),
-        Container(
-          height: 100,
-          width: double.infinity,
-          padding: EdgeInsets.all(20),
-          alignment: Alignment.centerLeft,
-          color: Theme.of(context).accentColor,
-          child: Text(
-            'Menu',
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 30,
-              color: Theme.of(context).canvasColor,
-            ),
-          ),
-        ),
+        // Container(
+        //   height: 100,
+        //   width: double.infinity,
+        //   padding: EdgeInsets.all(20),
+        //   alignment: Alignment.centerLeft,
+        //   color: Theme.of(context).accentColor,
+        //   child: Text(
+        //     'Menu',
+        //     style: TextStyle(
+        //       fontWeight: FontWeight.w900,
+        //       fontSize: 30,
+        //       color: Theme.of(context).canvasColor,
+        //     ),
+        //   ),
+        // ),
         hamburgerListTile(
           title: 'Home',
           icon: Icons.home,

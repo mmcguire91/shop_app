@@ -51,7 +51,8 @@ class CartScreen extends StatelessWidget {
                       )),
                   Spacer(),
                   Chip(
-                    label: Text('\$${cart.totalAmount}'),
+                    label: Text(
+                        '\$${cart.totalAmount.toStringAsFixed(2)}'), //ensure only two digits after decimal show
                   ),
                   FlatButton(
                     child: Text('order now'.toUpperCase()),
