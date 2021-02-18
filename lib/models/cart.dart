@@ -77,6 +77,30 @@ class Cart with ChangeNotifier {
   }
   //remove an item from the map of _items to remove the item with the given productID from the cart
 
+  void removeSingleItem(String productID) {
+    if (!_items.containsKey(productID)) {
+      return;
+    }
+    //if there is not an item that contains the productID then do nothing
+    if (_items[productID].quantity > 1) {
+      _items.update(
+        productID,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          title: existingCartItem.title,
+          price: existingCartItem.price,
+          quantity: existingCartItem.quantity - 1,
+        ),
+      );
+    }
+    //if there is an item with a productID in the cart that contains a quantity greater than 1 then update the item with that productID to subtract the quantity in the cart by 1
+    else {
+      _items.remove(productID);
+    }
+    //if there is an item with a productID in the cart that contains a quantity of 1 then remove that item
+    notifyListeners();
+  }
+
   void clearCart() {
     _items = {};
     notifyListeners();

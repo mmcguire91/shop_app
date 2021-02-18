@@ -63,8 +63,26 @@ class ProductItem extends StatelessWidget {
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
+              //on pressed, add the properties of the product to the cart
+              Scaffold.of(context).hideCurrentSnackBar();
+              //onPressed hide the current snackbar so if the user adds multiple items in a rapid succession they will see the snackbar for the current productID
+              Scaffold.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Item added to cart'),
+                  duration: Duration(
+                    seconds: 2,
+                  ),
+                  action: SnackBarAction(
+                    label: 'UNDO',
+                    onPressed: () {
+                      cart.removeSingleItem(product.id);
+                      //on pressed execute the removeSingleItem function from the cart variable (Cart Provider) and execute that fuction on the id property within the product variable (Product Provider)
+                    },
+                  ),
+                ),
+              );
+              //display a snackbar popup containing the defined properties and logic
             },
-            //on pressed, add the properties of the product to the cart
             color: Theme.of(context).accentColor,
           ),
         ),
