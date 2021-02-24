@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/cart_screen.dart';
 import '../screens/order_screen.dart';
+import '../screens/manage_products.dart';
 
 class SideDrawer extends StatelessWidget {
   Widget hamburgerListTile({String title, IconData icon, Function onTap}) {
@@ -54,6 +55,7 @@ class SideDrawer extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed('/');
           },
         ),
+        Divider(),
         hamburgerListTile(
           title: 'Cart',
           icon: Icons.shopping_cart,
@@ -61,11 +63,21 @@ class SideDrawer extends StatelessWidget {
             Navigator.of(context).pushReplacementNamed(CartScreen.routeName);
           },
         ),
+        Divider(),
         hamburgerListTile(
           title: 'Order',
           icon: Icons.credit_card,
           onTap: () {
             Navigator.of(context).pushReplacementNamed(OrdersScreen.routeName);
+          },
+        ),
+        Divider(),
+        hamburgerListTile(
+          title: 'Manage Products',
+          icon: Icons.edit,
+          onTap: () {
+            Navigator.of(context)
+                .pushReplacementNamed(ManageProductsScreen.routeName);
           },
         ),
       ],

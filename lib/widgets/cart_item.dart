@@ -61,10 +61,10 @@ class CartItem extends StatelessWidget {
               //on user press yes, dismiss modal and confirm action (true) on argument established in onDismissed (direction)
             ],
           ),
+          //show alert dialog to user on attempting to remove an item from the cart
         );
       },
-      //show alert dialog to user on attempting to remove an item from the cart
-      //--> ConfirmDismiss: Confirm that they want to dismiss the item
+      //ConfirmDismiss: Confirm that they want to dismiss the item by performing behavior established within widget
       child: Card(
         margin: EdgeInsets.symmetric(
           vertical: 4,
