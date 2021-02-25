@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../screens/cart_screen.dart';
 import '../screens/order_screen.dart';
-import '../screens/manage_products.dart';
+import '../screens/manage_products_screen.dart';
 
 class SideDrawer extends StatelessWidget {
   Widget hamburgerListTile({String title, IconData icon, Function onTap}) {
