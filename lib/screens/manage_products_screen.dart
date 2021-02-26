@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'edit_products_screen.dart';
+
 import '../widgets/side_drawer.dart';
 import '../widgets/manage_products_item.dart';
 
@@ -22,7 +24,9 @@ class ManageProductsScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             //const so it doesn't have to rebuild when new data is pulled in from ProductsProvider
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).pushNamed(EditProductsScreen.routeName);
+            },
           ),
         ],
       ),
