@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../models/product_model.dart';
+
 class EditProductsScreen extends StatefulWidget {
   static const routeName = '/edit_products';
   @override
@@ -11,6 +13,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageURLController = TextEditingController();
   final _imageURLFocusNode = FocusNode();
+  final _form = GlobalKey<FormState>();
+  //allow us to interact with the State of the Form widget
+  var _editedProduct = Product(
+    id: null,
+    title: '',
+    price: 0,
+    description: '',
+    imageURL: '',
+  );
 
   // FocusNode _priceFocusNode;
   // FocusNode _descriptionFocusNode;
@@ -38,7 +49,17 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       setState(() {});
     }
   }
+//custom listener function
 //if image URL does not have focus then update the UI and display the latest value held in the _imageURLController
+
+  void _saveForm() {
+    _form.currentState.save();
+    print(_editedProduct.title);
+    print(_editedProduct.description);
+    print(_editedProduct.price);
+    print(_editedProduct.imageURL);
+  }
+  //call on the current state of the form (all values currently entered in the form) and save those values
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +70,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       body: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
+          key: _form,
           child: ListView(
             children: [
               TextFormField(
@@ -63,6 +85,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 //establish the logic to go to the next user input
                 //onFieldSubitted (we don't care about the value entered into the text field)
                 //--> Focus the Scope on the node that has the vaule of the _priceFocusNode identified
+                onSaved: (value) {
+                  _editedProduct = Product(
+                    id: null,
+                    title: value,
+                    price: _editedProduct.price,
+                    description: _editedProduct.description,
+                    imageURL: _editedProduct.imageURL,
+                  );
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -76,6 +107,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_descriptionFocusNode);
                 },
+                onSaved: (value) {
+                  _editedProduct = Product(
+                    id: null,
+                    title: _editedProduct.title,
+                    price: double.parse(value),
+                    description: _editedProduct.description,
+                    imageURL: _editedProduct.imageURL,
+                  );
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -86,6 +126,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 keyboardType: TextInputType.multiline,
                 //numpad keyboard type
                 focusNode: _descriptionFocusNode,
+                onSaved: (value) {
+                  _editedProduct = Product(
+                    id: null,
+                    title: _editedProduct.title,
+                    price: _editedProduct.price,
+                    description: value,
+                    imageURL: _editedProduct.imageURL,
+                  );
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -124,6 +173,19 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       controller: _imageURLController,
                       //establishing a text editing controller to retrieve the value entered into the field prior to when the form is submitted
                       focusNode: _imageURLFocusNode,
+                      onFieldSubmitted: (_) {
+                        _saveForm();
+                      },
+                      //calling a function with an (_) instead if calling _saveForm directly because onFieldSubmitted expects a String argument
+                      onSaved: (value) {
+                        _editedProduct = Product(
+                          id: null,
+                          title: _editedProduct.title,
+                          price: _editedProduct.price,
+                          description: _editedProduct.description,
+                          imageURL: value,
+                        );
+                      },
                     ),
                   )
                 ],
@@ -131,6 +193,12 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.save),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Theme.of(context).accentColor,
+        onPressed: _saveForm,
       ),
     );
   }
