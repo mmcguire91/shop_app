@@ -25,6 +25,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
 
   // FocusNode _priceFocusNode;
   // FocusNode _descriptionFocusNode;
+  //could not establish like this because it would not work with the .dispose method
 
   @override
   void initState() {
