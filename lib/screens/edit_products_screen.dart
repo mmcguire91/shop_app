@@ -46,6 +46,16 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
 
   void _updateImageURL() {
     if (!_imageURLFocusNode.hasFocus) {
+      if ((!_imageURLController.text.startsWith('http') &&
+              !_imageURLController.text.startsWith('https')) ||
+          //ensure the user enters a valid url
+          (!_imageURLController.text.endsWith('.png') &&
+              !_imageURLController.text.endsWith('.jpg') &&
+              !_imageURLController.text.endsWith('.jpeg'))) {
+        //ensure the user enters a valid url
+        return;
+      }
+      //validation for the updateImage function
       setState(() {});
     }
   }
@@ -53,6 +63,12 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
 //if image URL does not have focus then update the UI and display the latest value held in the _imageURLController
 
   void _saveForm() {
+    final isValid = _form.currentState.validate();
+    //save validation function to isValid varible
+    if (!isValid) {
+      return;
+    }
+    //if the form does not pass validation do not perform other functions within _saveForm()
     _form.currentState.save();
     print(_editedProduct.title);
     print(_editedProduct.description);
@@ -94,6 +110,14 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                     imageURL: _editedProduct.imageURL,
                   );
                 },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Enter a title';
+                  }
+                  return null;
+                },
+                //validation for title text field
+                //if there is no characters in the title text field return error text, else do nothing
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -116,6 +140,21 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                     imageURL: _editedProduct.imageURL,
                   );
                 },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Enter a price';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Enter a number';
+                  }
+                  //ensure the user enters a number value
+                  if (double.tryParse(value) <= 0) {
+                    return 'Enter a number greater than 0';
+                  }
+                  //ensure the user cannot create a free product
+                  return null;
+                  //if passes all conditions do nothing
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(
@@ -134,6 +173,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                     description: value,
                     imageURL: _editedProduct.imageURL,
                   );
+                },
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Enter a description';
+                  }
+                  if (value.length < 5) {
+                    return 'Enter at least 5 characters';
+                  }
+                  return null;
                 },
               ),
               Row(
@@ -185,6 +233,23 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                           description: _editedProduct.description,
                           imageURL: value,
                         );
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Enter an image URL';
+                        }
+                        if (value.startsWith('http') &&
+                            !value.startsWith('https')) {
+                          return 'Enter a valid URL';
+                        }
+                        //ensure the user enters a valid url
+                        if (!value.endsWith('.png') &&
+                            !value.endsWith('.jpg') &&
+                            !value.endsWith('.jpeg')) {
+                          return 'Enter a valid image URL';
+                        }
+                        //ensure the user enters a valid image URL and not a malicious URL link or other file
+                        return null;
                       },
                     ),
                   )
