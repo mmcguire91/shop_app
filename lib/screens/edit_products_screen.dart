@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../models/products_provider.dart';
 
 class EditProductsScreen extends StatefulWidget {
   static const routeName = '/edit_products';
@@ -71,10 +73,11 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     }
     //if the form does not pass validation do not perform other functions within _saveForm()
     _form.currentState.save();
-    print(_editedProduct.title);
-    print(_editedProduct.description);
-    print(_editedProduct.price);
-    print(_editedProduct.imageURL);
+    Provider.of<ProductsProvider>(context, listen: false)
+        .addProduct(_editedProduct);
+    //add the newly created product to the list of Products in the ProductsProvider
+    Navigator.of(context).pop();
+    //go back to the previous page
   }
   //call on the current state of the form (all values currently entered in the form) and save those values
 

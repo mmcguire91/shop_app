@@ -57,8 +57,16 @@ class ProductsProvider with ChangeNotifier {
   }
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
-  void addProduct() {
-    // _items.add(value);
+  void addProduct(Product product) {
+    final newProduct = Product(
+      title: product.title,
+      description: product.description,
+      imageURL: product.imageURL,
+      price: product.price,
+      id: DateTime.now().toString(),
+    );
+    _items.add(newProduct);
+    // _items.insert(0, product); //if we want to add the newly added product to the top of the list
     notifyListeners();
   }
 }
