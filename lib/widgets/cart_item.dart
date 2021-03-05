@@ -49,12 +49,12 @@ class CartItem extends StatelessWidget {
             title: Text('Are you sure?'),
             content: Text('Do you want to remove this item from the cart?'),
             actions: [
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.of(ctx).pop(false),
                 child: Text('No'),
               ),
               //on user press no, dismiss modal and take no action (false) on argument established in onDismissed (direction)
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.of(ctx).pop(true),
                 child: Text('Yes'),
               ),

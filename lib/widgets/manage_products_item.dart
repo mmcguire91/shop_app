@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ManageProductsItem extends StatelessWidget {
-  ManageProductsItem({this.title, this.imageURL});
+import '../screens/edit_products_screen.dart';
 
+class ManageProductsItem extends StatelessWidget {
+  ManageProductsItem({this.id, this.title, this.imageURL});
+
+  final String id;
   final String title;
   final String imageURL;
   @override
@@ -20,7 +23,10 @@ class ManageProductsItem extends StatelessWidget {
           children: [
             IconButton(
               icon: Icon(Icons.edit),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(EditProductsScreen.routeName, arguments: id);
+              },
             ),
             IconButton(
               icon: Icon(Icons.delete),

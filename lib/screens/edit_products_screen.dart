@@ -25,6 +25,17 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     imageURL: '',
   );
 
+  var _isInit = true;
+//is the screen loading / being initialized for the first time
+
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageURL': '',
+  };
+  //setting the intialized values to empty and priming for populating them with data should the user choose to edit a product
+
   // FocusNode _priceFocusNode;
   // FocusNode _descriptionFocusNode;
   //could not establish like this because it would not work with the .dispose method
@@ -35,6 +46,33 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     super.initState();
   }
   //adding a customized listener when the page is initiatlized to execute the updateImageURL function
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productID = ModalRoute.of(context).settings.arguments as String;
+      //retrieve the product id from the route where the arguments are established (from manageProductsItem)
+      if (productID != null) {
+        _editedProduct = Provider.of<ProductsProvider>(context, listen: false)
+            .findByID(productID);
+        //set the value of the edited product to the value of the ProductsProvider where the argument is retrieved from the modal route
+        //you passed the ID of the product you want to edit via the ManageProductsItem widget in the ManageProductsScreen. This function pulls the ID of the product you just decided to edit and now populates the _editedProduct variable with the values of that product
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          'imageURL': '',
+        };
+        //setting the initialized values of the fields according to the product that the user is choosing to edit
+        _imageURLController.text = _editedProduct.imageURL;
+        //because we set the behavior to update the value of the imageURL container (preview image) whenever the focus is taken away from the imageURL text field we need to establish a different behavior than all others in the map.
+      }
+      //if there is a productID that is passed over then populate the fields with the values of the productID
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+  //if the screen is being initialized, populate it with the values of the productID passed over from the given product the user pressed the edit button on from ManageProductsScreen then set the value of _isInit to false
 
   @override
   void dispose() {
@@ -94,6 +132,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _initValues['title'],
+                //populate the field with the initialized value whether passing over a productID or creating a new product
                 decoration: InputDecoration(
                   labelText: 'Title',
                 ),
@@ -124,6 +164,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 //if there is no characters in the title text field return error text, else do nothing
               ),
               TextFormField(
+                initialValue: _initValues['price'],
+                //populate the field with the initialized value whether passing over a productID or creating a new product
                 decoration: InputDecoration(
                   labelText: 'Price',
                 ),
@@ -161,6 +203,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 },
               ),
               TextFormField(
+                initialValue: _initValues['description'],
+                //populate the field with the initialized value whether passing over a productID or creating a new product
                 decoration: InputDecoration(
                   labelText: 'Description',
                 ),
@@ -224,6 +268,7 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       keyboardType: TextInputType.url,
                       controller: _imageURLController,
                       //establishing a text editing controller to retrieve the value entered into the field prior to when the form is submitted
+                      //The text form field cannot take both an initial value and a text editing controller so we assigned the text editing controller (_imageURLController) with the initialized value (whether there was a productID passed over or not) and pass it back to the TextFormField. This was done in the didChangeDependencies function.
                       focusNode: _imageURLFocusNode,
                       onFieldSubmitted: (_) {
                         _saveForm();

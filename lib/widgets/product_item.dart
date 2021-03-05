@@ -64,9 +64,9 @@ class ProductItem extends StatelessWidget {
             onPressed: () {
               cart.addItem(product.id, product.price, product.title);
               //on pressed, add the properties of the product to the cart
-              Scaffold.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
               //onPressed hide the current snackbar so if the user adds multiple items in a rapid succession they will see the snackbar for the current productID
-              Scaffold.of(context).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Item added to cart'),
                   duration: Duration(

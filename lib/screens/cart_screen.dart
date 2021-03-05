@@ -54,9 +54,9 @@ class CartScreen extends StatelessWidget {
                     label: Text(
                         '\$${cart.totalAmount.toStringAsFixed(2)}'), //ensure only two digits after decimal show
                   ),
-                  FlatButton(
+                  TextButton(
                     child: Text('order now'.toUpperCase()),
-                    textColor: Theme.of(context).primaryColor,
+                    // textColor: Theme.of(context).primaryColor,
                     onPressed: () {
                       Provider.of<Orders>(context, listen: false).addOrders(
                         cart.items.values.toList(),
