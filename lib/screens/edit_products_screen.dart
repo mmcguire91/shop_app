@@ -111,8 +111,18 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     }
     //if the form does not pass validation do not perform other functions within _saveForm()
     _form.currentState.save();
-    Provider.of<ProductsProvider>(context, listen: false)
-        .addProduct(_editedProduct);
+    if (_editedProduct.id != null) {
+      Provider.of<ProductsProvider>(context, listen: false).updateProduct(
+        id: _editedProduct.id,
+        updatedProduct: _editedProduct,
+      );
+    }
+    //if we are editing a product that currently has an id we know that the product already exists becuase it has an ID value
+    //providing the product that currently has an id and passing that back to the updateProduct method in the Provider that will globally update the app whereever the product provider is called
+    else {
+      Provider.of<ProductsProvider>(context, listen: false)
+          .addProduct(_editedProduct);
+    }
     //add the newly created product to the list of Products in the ProductsProvider
     Navigator.of(context).pop();
     //go back to the previous page
@@ -147,7 +157,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 //--> Focus the Scope on the node that has the vaule of the _priceFocusNode identified
                 onSaved: (value) {
                   _editedProduct = Product(
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                     title: value,
                     price: _editedProduct.price,
                     description: _editedProduct.description,
@@ -179,7 +190,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 },
                 onSaved: (value) {
                   _editedProduct = Product(
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                     title: _editedProduct.title,
                     price: double.parse(value),
                     description: _editedProduct.description,
@@ -215,7 +227,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                 focusNode: _descriptionFocusNode,
                 onSaved: (value) {
                   _editedProduct = Product(
-                    id: null,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                     title: _editedProduct.title,
                     price: _editedProduct.price,
                     description: value,
@@ -276,7 +289,8 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
                       //calling a function with an (_) instead if calling _saveForm directly because onFieldSubmitted expects a String argument
                       onSaved: (value) {
                         _editedProduct = Product(
-                          id: null,
+                          id: _editedProduct.id,
+                          isFavorite: _editedProduct.isFavorite,
                           title: _editedProduct.title,
                           price: _editedProduct.price,
                           description: _editedProduct.description,
