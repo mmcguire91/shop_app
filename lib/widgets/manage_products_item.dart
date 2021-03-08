@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/edit_products_screen.dart';
+import '../models/products_provider.dart';
 
 class ManageProductsItem extends StatelessWidget {
   ManageProductsItem({this.id, this.title, this.imageURL});
@@ -30,7 +32,10 @@ class ManageProductsItem extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {},
+              onPressed: () {
+                Provider.of<ProductsProvider>(context, listen: false)
+                    .deleteProduct(id);
+              },
             ),
           ],
         ),
