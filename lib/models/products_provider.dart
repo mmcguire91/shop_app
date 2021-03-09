@@ -64,6 +64,7 @@ class ProductsProvider with ChangeNotifier {
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
   void addProduct(Product product) {
+    //TODO: Add FUTURE method
     final url = Uri.https(
         'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
     //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
