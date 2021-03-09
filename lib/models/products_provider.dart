@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'product_model.dart';
 
+import 'package:http/http.dart' as http;
+//package for API calls
+//'as http' requires user to specify package.DataType
+import 'dart:convert';
+//json encode and decoder
+
 //products_prodvider.dart holds all data and provides it to the listeners
 
 class ProductsProvider with ChangeNotifier {
@@ -58,6 +64,22 @@ class ProductsProvider with ChangeNotifier {
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
   void addProduct(Product product) {
+    final url = Uri.https(
+        'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
+    //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+    //establish the URL where the API call will be made
+    http.post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'imageURL': product.imageURL,
+        'price': product.price,
+        'isFavorite': product.isFavorite,
+      }),
+    );
+    //establish the API call and code that as a JSON to post the data via API to the database
+
     final newProduct = Product(
       title: product.title,
       description: product.description,
