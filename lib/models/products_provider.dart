@@ -63,13 +63,13 @@ class ProductsProvider with ChangeNotifier {
   }
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
-  void addProduct(Product product) {
-    //TODO: Add FUTURE method
+  Future<void> addProduct(Product product) {
     final url = Uri.https(
         'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
     //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
     //establish the URL where the API call will be made
-    http.post(
+    return http
+        .post(
       url,
       body: json.encode({
         'title': product.title,
@@ -77,21 +77,25 @@ class ProductsProvider with ChangeNotifier {
         'imageURL': product.imageURL,
         'price': product.price,
         'isFavorite': product.isFavorite,
-      }),
-    );
-    //establish the API call and code that as a JSON to post the data via API to the database
-
-    final newProduct = Product(
-      title: product.title,
-      description: product.description,
-      imageURL: product.imageURL,
-      price: product.price,
-      id: DateTime.now().toString(),
-    );
-    _items.add(newProduct);
-    // _items.insert(0, product); //if we want to add the newly added product to the top of the list
-    notifyListeners();
+      }), //establish the API call and code that as a JSON to post the data via API to the database
+    )
+        .then((response) {
+      final newProduct = Product(
+        title: product.title,
+        description: product.description,
+        imageURL: product.imageURL,
+        price: product.price,
+        id: json.decode(response.body)['name'],
+        //establish as the ID assigned in Firebase
+      );
+      _items.add(newProduct);
+      // _items.insert(0, product); //if we want to add the newly added product to the top of the list
+      notifyListeners();
+    });
+    //.then = perform action after API call was made
+    //we wait for the API CREATE call to be successfully made THEN add the new product to the manage products page
   }
+  //expecting to return the value of a future. We may establish the return higher in the hierarchy but the actual future value is returned through the .then function
 
   void updateProduct({String id, Product updatedProduct}) {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
