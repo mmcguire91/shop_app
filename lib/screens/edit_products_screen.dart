@@ -135,7 +135,31 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     else {
       Provider.of<ProductsProvider>(context, listen: false)
           .addProduct(_editedProduct)
-          .then((_) {
+          .catchError((error) {
+        //calling on the error that was established in the productsProvider class .catchError((error) {throw error}) method in the addProduct function
+        //since this is estblished at this place in the hierarchy it will only run if an error occurs in this function up to this point. This catchError method will not run if there is an error after the .catchError is called
+        //.catchError returns a future value
+        return showDialog<Null>(
+          //when an error occurrs also prompt the user with a dialog box
+          // in the case that an error occurs, by us putting the return in front of showDialog, showDialog will fulfill that Future in case of the error. If there is no error the .then will fulfill the expected Future value
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('An error occurred'),
+            content: Text(error.toString()),
+            //we are calling error.toString here but normally we wouldn't want to do this due to security concerns
+            //normally we would want to say something like 'Something went wrong'
+            actions: [
+              TextButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }).then((_) {
+        //the .then will still run even if an error occurs because the .catchError also returns a Future value which the .then fulfills
         setState(() {
           _isLoading = false;
         });
