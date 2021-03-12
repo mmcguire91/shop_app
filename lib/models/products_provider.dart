@@ -63,26 +63,26 @@ class ProductsProvider with ChangeNotifier {
   }
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
-  Future<void> addProduct(Product product) {
-    //expecting to return the value of a future. We call return on a non-future value (http.post) higher in the hierarchy but the actual future value is returned through the .then function
+  Future<void> addProduct(Product product) async {
+    //running a Future async API call meaning that we want this to run asynchronously from our code
     final url = Uri.https(
         'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
-    // note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+    //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
     //establish the URL where the API call will be made
-    return http
-        .post(
-      url,
-      body: json.encode({
-        'title': product.title,
-        'description': product.description,
-        'imageURL': product.imageURL,
-        'price': product.price,
-        'isFavorite': product.isFavorite,
-      }), //establish the API call and code that as a JSON to post the data via API to the database
-    )
-        .then((response) {
-      //.then = perform action after API call was made
-      //we wait for the API CREATE call to be successfully made THEN add the new product to the manage products page
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageURL': product.imageURL,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }), //establish the API call and code that as a JSON to post the data via API to the database
+        //await = we want this code to run first before performing the other actions connected to this code. AKA we are dependent on this code to run prior to performing the other actions
+      );
+      //perform action after API call was made
+      //we wait for the API CREATE call to be successfully made then execute this code to add the new product to the manage products page
       final newProduct = Product(
         title: product.title,
         description: product.description,
@@ -94,12 +94,13 @@ class ProductsProvider with ChangeNotifier {
       _items.add(newProduct);
       // _items.insert(0, product); //if we want to add the newly added product to the top of the list
       notifyListeners();
-    }).catchError((error) {
+      //this code block established outside of the CREATE (post) API response was previously wrapped in a .then statement but replaced by async await
+    } catch (error) {
       print(error);
       throw error;
       //throw error is establishing a new instance of that error to allow us to call on it anywhere within the code where the provider method is called
-    });
-    //catchError works as a catch-all for the entire function so that any error that is thrown anywhere within the function, DART will immediately skip to the catchError method and run the code in that function
+    }
+    //catch(error) works as a catch-all for the entire function so that any error that is thrown anywhere within the function, DART will immediately skip to the catch(error) method and run the code in that function
   }
 
   void updateProduct({String id, Product updatedProduct}) {

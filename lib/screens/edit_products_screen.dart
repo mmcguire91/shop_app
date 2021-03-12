@@ -106,9 +106,10 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
 //custom listener function
 //if image URL does not have focus then update the UI and display the latest value held in the _imageURLController
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     //save validation function to isValid varible
+    //.validate = Validates every [FormField] that is a descendant of this [Form], and returns true if there are no errors.
     if (!isValid) {
       return;
     }
@@ -130,18 +131,22 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
       Navigator.of(context).pop();
     }
     //if we are editing a product that currently has an id we know that the product already exists becuase it has an ID value
-    //providing the product that currently has an id and passing that back to the updateProduct method in the Provider that will globally update the app whereever the product provider is called
+    //providing the product that currently has an id and passing that back to the updateProduct method in the Provider that will globally update the app where ever the product provider is called
     //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
     else {
-      Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((error) {
-        //calling on the error that was established in the productsProvider class .catchError((error) {throw error}) method in the addProduct function
-        //since this is estblished at this place in the hierarchy it will only run if an error occurs in this function up to this point. This catchError method will not run if there is an error after the .catchError is called
-        //.catchError returns a future value
-        return showDialog<Null>(
+      try {
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .addProduct(_editedProduct);
+      } //in the case that the id of a product that we are editing == null then we want to try to add the edited product using the addProduct function in the ProductsProvider
+      //we are using try because we are attempting to make an API call, we would not use this for locally handled data
+      //using await becuase we want to wait on the API call to be attempted prior to executing any other code meaning that the result that could occur (item being added to the manage products screen) is dependent on this API call being made
+      //--> we don't want API call to be made asynchronously on the manage products page where we want the manage products page to load without the new product present and then have the new product populate once the user is already on the page (preventing a user from thinking the app is glitching)
+      catch (error) {
+        //calling on the error that was established in the productsProvider class catch(error) {throw error} method in the addProduct function
+        await showDialog<Null>(
+          //adding await because we don't want the finally code block to run prior to error handling to occur if necessary
           //when an error occurrs also prompt the user with a dialog box
-          // in the case that an error occurs, by us putting the return in front of showDialog, showDialog will fulfill that Future in case of the error. If there is no error the .then will fulfill the expected Future value
+          //in the case that an error occurs, by us putting the return in front of showDialog, showDialog will fulfill that Future in case of the error. If there is no error the .then will fulfill the expected Future value
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('An error occurred'),
@@ -158,15 +163,15 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             ],
           ),
         );
-      }).then((_) {
-        //the .then will still run even if an error occurs because the .catchError also returns a Future value which the .then fulfills
+      } finally {
+        //finally only works with try and catch. Code wrapped in finally will run regardless if the code is run in the try or catch block
         setState(() {
           _isLoading = false;
         });
         //setting the state as is loading to false after the function has been executed but before navigating back to the previous page
         Navigator.of(context).pop();
-      });
-      //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
+        //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
+      }
     }
     //add the newly created product to the list of Products in the ProductsProvider THEN go back to the previous page
     //we are able to call .then because we established addProduct as a future method in the productsProvider
