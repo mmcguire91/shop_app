@@ -13,10 +13,10 @@ import 'models/cart.dart';
 import 'models/orders.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ShopApp());
 }
 
-class MyApp extends StatelessWidget {
+class ShopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
