@@ -63,6 +63,23 @@ class ProductsProvider with ChangeNotifier {
   }
   //by the user clicking on a specific product it will identify the productID and all information associated with that product
 
+//READ API call
+  Future<void> getProducts() async {
+    final url = Uri.https(
+        'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
+    //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+    //establish the URL where the API call will be made
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+      //attempt to retrieve the data stored in firebase
+    } catch (error) {
+      print(error);
+      throw (error);
+    }
+  }
+
+//CREATE API call
   Future<void> addProduct(Product product) async {
     //running a Future async API call meaning that we want this to run asynchronously from our code
     final url = Uri.https(

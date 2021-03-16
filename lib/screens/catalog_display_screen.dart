@@ -6,6 +6,8 @@ import '../widgets/badge.dart';
 import '../models/cart.dart';
 import '../widgets/side_drawer.dart';
 
+import '../models/products_provider.dart';
+
 //catalog_disply_screen.dart is the screen which displays all products for selection
 
 enum FilterOptions {
@@ -20,6 +22,27 @@ class CatalogDisplayScreen extends StatefulWidget {
 
 class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
   var _showOnlyFavorites = false;
+
+  @override
+  void initState() {
+    Provider.of<ProductsProvider>(context, listen: false).getProducts();
+    super.initState();
+  }
+  //the provider must have listen:false (fetch products once) on initState or else the provider will continually listen for updates in the initState method which would prevent the page from loading
+  /*
+  Another method using didChangeDependencies: 
+  var _isInit = true;
+  //variable to determine if the page is initialized / loaded
+
+@override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<ProductsProvider>(context, listen: false).getProducts();
+    }
+    _isInit = false;
+    super.didChangeDependencies();
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
