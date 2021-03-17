@@ -12,38 +12,38 @@ import 'dart:convert';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [
-    Product(
-      id: 'p1',
-      title: 'Red Shirt',
-      description: 'A red shirt - it is pretty red!',
-      price: 29.99,
-      imageURL:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
-    Product(
-      id: 'p2',
-      title: 'Not Levi\'s jeans',
-      description: 'A nice pair of trousers.',
-      price: 59.99,
-      imageURL:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Yellow Scarf',
-      description: 'Warm and cozy - exactly what you need for the winter.',
-      price: 19.99,
-      imageURL:
-          'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    ),
-    Product(
-      id: 'p4',
-      title: 'Cast Iron Skillet',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageURL:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+    // Product(
+    //   id: 'p1',
+    //   title: 'Red Shirt',
+    //   description: 'A red shirt - it is pretty red!',
+    //   price: 29.99,
+    //   imageURL:
+    //       'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
+    // ),
+    // Product(
+    //   id: 'p2',
+    //   title: 'Not Levi\'s jeans',
+    //   description: 'A nice pair of trousers.',
+    //   price: 59.99,
+    //   imageURL:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
+    // ),
+    // Product(
+    //   id: 'p3',
+    //   title: 'Yellow Scarf',
+    //   description: 'Warm and cozy - exactly what you need for the winter.',
+    //   price: 19.99,
+    //   imageURL:
+    //       'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
+    // ),
+    // Product(
+    //   id: 'p4',
+    //   title: 'Cast Iron Skillet',
+    //   description: 'Prepare any meal you want.',
+    //   price: 49.99,
+    //   imageURL:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
+    // ),
   ];
   //made private class because we do not want these items to be editable
 
@@ -71,8 +71,28 @@ class ProductsProvider with ChangeNotifier {
     //establish the URL where the API call will be made
     try {
       final response = await http.get(url);
-      print(json.decode(response.body));
-      //attempt to retrieve the data stored in firebase
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      //retrieve the json response data stored in firebase, translate to a Map, and store that map in the jsonResponse variable
+      final List<Product> loadedProducts = [];
+      //establish an empty list in preparation to store the new Product values retrieved from the API call
+      jsonResponse.forEach((prodID, prodData) {
+        //forEach will exectue a function on every value that is housed within that Map
+        loadedProducts.insert(
+            0,
+            Product(
+              id: prodID,
+              title: prodData['title'],
+              description: prodData['description'],
+              price: prodData['price'],
+              imageURL: prodData['imageURL'],
+              isFavorite: prodData['isFavorite'],
+            ));
+        //insert at index 0 inserts the newest added product at the beginning of the list
+        //retrieve the values for each of the given properties and Map them according to the values stored on the server
+      });
+      _items = loadedProducts;
+      notifyListeners();
+      //set the value of the _items list - that is the primary data of the ProductsProvider to tell the different areas of the app the data to show - equal to the values retrieved from the API call
     } catch (error) {
       print(error);
       throw (error);
