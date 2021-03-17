@@ -22,10 +22,25 @@ class CatalogDisplayScreen extends StatefulWidget {
 
 class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
   var _showOnlyFavorites = false;
+  bool _isLoading = false;
+  //variable used to establish if a page is loading
 
   @override
   void initState() {
-    Provider.of<ProductsProvider>(context, listen: false).getProducts();
+    setState(() {
+      _isLoading = true;
+    });
+    //when the state of the screen is initialized set the value of _isLoading to true
+    //by setting _isLoading to true we are establishing another state while the API call is being made
+    Provider.of<ProductsProvider>(context, listen: false)
+        .getProducts()
+        .then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+    //we are making the API call and then setting the state of _isLoading back to false indicating the change of the _isLoading variable means a completed API call
+    //--> by changing the value of _isLoading prior to and after the API call it allows us to put additional functionality while the API call is made --> we established a CircularProgressIndicator which may be found in the body
     super.initState();
   }
   //the provider must have listen:false (fetch products once) on initState or else the provider will continually listen for updates in the initState method which would prevent the page from loading
@@ -93,7 +108,14 @@ class _CatalogDisplayScreenState extends State<CatalogDisplayScreen> {
         ],
       ),
       drawer: SideDrawer(),
-      body: Catalog(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
+            )
+          : Catalog(_showOnlyFavorites),
+      //if the page is loading show the circular progress indicator (during the API call). Once the API call is complete show the intended body
     );
   }
 }
