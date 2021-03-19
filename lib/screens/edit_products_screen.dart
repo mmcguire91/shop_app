@@ -120,19 +120,39 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
     });
     //setting the state of isLoading to true while we execute the method and before we navigate back to the previous page
     if (_editedProduct.id != null) {
-      Provider.of<ProductsProvider>(context, listen: false).updateProduct(
-        id: _editedProduct.id,
-        updatedProduct: _editedProduct,
-      );
-      setState(() {
-        _isLoading = false;
-      });
-      //setting the state as is loading to false after the function has been executed but before navigating back to the previous page
-      Navigator.of(context).pop();
+      try {
+        await Provider.of<ProductsProvider>(context, listen: false)
+            .updateProduct(
+          id: _editedProduct.id,
+          updatedProduct: _editedProduct,
+        );
+      } catch (error) {
+        //calling on the error that was established in the productsProvider class catch(error) {throw error} method in the addProduct function
+        await showDialog<Null>(
+          //adding await because we don't want the finally code block to run prior to error handling to occur if necessary
+          //when an error occurrs also prompt the user with a dialog box
+          //in the case that an error occurs, by us putting the return in front of showDialog, showDialog will fulfill that Future in case of the error. If there is no error the .then will fulfill the expected Future value
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('An error occurred'),
+            content: Text(error.toString()),
+            //we are calling error.toString here but normally we wouldn't want to do this due to security concerns
+            //normally we would want to say something like 'Something went wrong'
+            actions: [
+              TextButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
     }
     //if we are editing a product that currently has an id we know that the product already exists becuase it has an ID value
     //providing the product that currently has an id and passing that back to the updateProduct method in the Provider that will globally update the app where ever the product provider is called
-    //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
+
     else {
       try {
         await Provider.of<ProductsProvider>(context, listen: false)
@@ -163,18 +183,25 @@ class _EditProductsScreenState extends State<EditProductsScreen> {
             ],
           ),
         );
-      } finally {
-        //finally only works with try and catch. Code wrapped in finally will run regardless if the code is run in the try or catch block
-        setState(() {
-          _isLoading = false;
-        });
-        //setting the state as is loading to false after the function has been executed but before navigating back to the previous page
-        Navigator.of(context).pop();
-        //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
       }
+      //We commented out finally {} because we moved the setState((){}) function down in our code logic to execute after the 3 different await methods are attempted so finally was no longer required
+      // finally {
+      //   //finally only works with try and catch. Code wrapped in finally will run regardless if the code is run in the try or catch block
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      //   //setting the state as _isLoading to false after the function has been executed but before navigating back to the previous page
+      //   Navigator.of(context).pop();
+      //   //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
+      // }
     }
-    //add the newly created product to the list of Products in the ProductsProvider THEN go back to the previous page
-    //we are able to call .then because we established addProduct as a future method in the productsProvider
+    //this setState will run only after the 3 await methods above are attempted
+    setState(() {
+      _isLoading = false;
+    });
+    //setting the state as is loading to false after the function has been executed but before navigating back to the previous page
+    Navigator.of(context).pop();
+    //user will stay on the previous page while the function is executed. While the function is executed, the loading progress indicator will persist. Once function is complete, the user will be navigated back to the previous page
   }
   //call on the current state of the form (all values currently entered in the form) and save those values
 

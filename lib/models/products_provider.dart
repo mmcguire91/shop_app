@@ -140,11 +140,32 @@ class ProductsProvider with ChangeNotifier {
     //catch(error) works as a catch-all for the entire function so that any error that is thrown anywhere within the function, DART will immediately skip to the catch(error) method and run the code in that function
   }
 
-  void updateProduct({String id, Product updatedProduct}) {
+//UPDATE API CALL
+  Future<void> updateProduct({String id, Product updatedProduct}) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = updatedProduct;
-      notifyListeners();
+      final url = Uri.https(
+          'shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
+          '/products/$id.json');
+      //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+      //establish the URL where the API call will be made
+      //note that the URL is different from that of the READ and CREATE API calls where we are targeting the ID of the existing product
+      try {
+        await http.patch(url,
+            body: json.encode({
+              'title': updatedProduct.title,
+              'description': updatedProduct.description,
+              'imageURL': updatedProduct.imageURL,
+              'price': updatedProduct.price,
+            }));
+        //perform the UPDATE API call to update the given productID with the defined values that should match the fields already established in the firebase db
+        //ensure the values in the map match those expected data fields in Firebase so that the UPDATE request will be successful
+        _items[prodIndex] = updatedProduct;
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        throw (error);
+      }
     }
   }
 
