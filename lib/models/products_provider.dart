@@ -12,38 +12,40 @@ import 'dart:convert';
 
 class ProductsProvider with ChangeNotifier {
   List<Product> _items = [
-    // Product(
-    //   id: 'p1',
-    //   title: 'Red Shirt',
-    //   description: 'A red shirt - it is pretty red!',
-    //   price: 29.99,
-    //   imageURL:
-    //       'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    // ),
-    // Product(
-    //   id: 'p2',
-    //   title: 'Not Levi\'s jeans',
-    //   description: 'A nice pair of trousers.',
-    //   price: 59.99,
-    //   imageURL:
-    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    // ),
-    // Product(
-    //   id: 'p3',
-    //   title: 'Yellow Scarf',
-    //   description: 'Warm and cozy - exactly what you need for the winter.',
-    //   price: 19.99,
-    //   imageURL:
-    //       'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    // ),
-    // Product(
-    //   id: 'p4',
-    //   title: 'Cast Iron Skillet',
-    //   description: 'Prepare any meal you want.',
-    //   price: 49.99,
-    //   imageURL:
-    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    // ),
+/*
+    Product(
+      id: 'p1',
+      title: 'Red Shirt',
+      description: 'A red shirt - it is pretty red!',
+      price: 29.99,
+      imageURL:
+          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
+    ),
+    Product(
+      id: 'p2',
+      title: 'Not Levi\'s jeans',
+      description: 'A nice pair of trousers.',
+      price: 59.99,
+      imageURL:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
+    ),
+    Product(
+      id: 'p3',
+      title: 'Yellow Scarf',
+      description: 'Warm and cozy - exactly what you need for the winter.',
+      price: 19.99,
+      imageURL:
+          'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
+    ),
+    Product(
+      id: 'p4',
+      title: 'Cast Iron Skillet',
+      description: 'Prepare any meal you want.',
+      price: 49.99,
+      imageURL:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
+    ),
+    */
   ];
   //made private class because we do not want these items to be editable
 
@@ -147,9 +149,9 @@ class ProductsProvider with ChangeNotifier {
       final url = Uri.https(
           'shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
           '/products/$id.json');
-      //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+      //note that for the URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
       //establish the URL where the API call will be made
-      //note that the URL is different from that of the READ and CREATE API calls where we are targeting the ID of the existing product
+      //note that the URL is different from that of the READ and CREATE API calls- here we are targeting the ID of the existing product
       try {
         await http.patch(url,
             body: json.encode({
@@ -169,8 +171,32 @@ class ProductsProvider with ChangeNotifier {
     }
   }
 
+  //DELETE API call
   void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+    final url = Uri.https('shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
+        '/products/$id.json');
+    //note that for the URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+    //establish the URL where the API call will be made
+    //note that the URL is different from that of the READ and CREATE API calls - here we are targeting the ID of the existing product
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    //identify the index that you are trying to target
+    //remove the id of the element (prod) is equal to the id that is targeted from the list of items
+    var existingProduct = _items[existingProductIndex];
+    //variable existing product = the index we are trying to target (the product id which is the primary key of the record stored in the db) within the items list
+    _items.removeAt(existingProductIndex);
+    //target the index of the oriduct and remove it from the list
+
+    //OPTIMISTIC UPDATING
+    http.delete(url).then((repsonse) {
+      if (repsonse.statusCode >= 400) {}
+      //custom error handling if the web response returns a 400 or higher
+      existingProduct = null;
+      //call the API to change the value of the existingProduct = null which removes the existingProductIndex (or the record of the product) from the list of products in the db
+    }).catchError((_) {
+      _items.insert(existingProductIndex, existingProduct);
+      //in the case that we encounter an error we should take the record of the product that we are attempting to delete and insert that back into the list
+    });
+
     notifyListeners();
   }
 }
