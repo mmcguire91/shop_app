@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'product_model.dart';
+import 'http_exception.dart';
 
 import 'package:http/http.dart' as http;
 //package for API calls
@@ -142,7 +143,7 @@ class ProductsProvider with ChangeNotifier {
     //catch(error) works as a catch-all for the entire function so that any error that is thrown anywhere within the function, DART will immediately skip to the catch(error) method and run the code in that function
   }
 
-//UPDATE API CALL
+//UPDATE API call
   Future<void> updateProduct({String id, Product updatedProduct}) async {
     final prodIndex = _items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
@@ -172,7 +173,7 @@ class ProductsProvider with ChangeNotifier {
   }
 
   //DELETE API call
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     final url = Uri.https('shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
         '/products/$id.json');
     //note that for the URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
@@ -185,18 +186,47 @@ class ProductsProvider with ChangeNotifier {
     //variable existing product = the index we are trying to target (the product id which is the primary key of the record stored in the db) within the items list
     _items.removeAt(existingProductIndex);
     //target the index of the oriduct and remove it from the list
-
+    notifyListeners();
     //OPTIMISTIC UPDATING
-    http.delete(url).then((repsonse) {
-      if (repsonse.statusCode >= 400) {}
-      //custom error handling if the web response returns a 400 or higher
-      existingProduct = null;
-      //call the API to change the value of the existingProduct = null which removes the existingProductIndex (or the record of the product) from the list of products in the db
-    }).catchError((_) {
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
       _items.insert(existingProductIndex, existingProduct);
       //in the case that we encounter an error we should take the record of the product that we are attempting to delete and insert that back into the list
-    });
-
-    notifyListeners();
+      notifyListeners();
+      throw HttpException(message: 'Could not delete product');
+    }
+    //custom error handling if the web response returns a 400 or higher
+    //if the web response returns an unexecutable error code we throw the error handling exception
+    //if there is an error that occurs the code will stop running at the throw exception
+    existingProduct = null;
+    //call the API to change the value of the existingProduct = null which removes the existingProductIndex (or the record of the product) from the list of products in the db
   }
 }
+
+/*WHAT's HAPPENING HERE?
+_items.removeAt(existingProductIndex);
+    //we are immedidately removing the targeted record of the product by targeting the ID
+    
+    notifyListeners();
+    //notifying everyone that the record of the product was removed from the list
+    
+    //OPTIMISTIC UPDATING
+    final response = await http.delete(url);
+    //after we are communicating throughout the app that the product has been removed we are pinging the API to remove the product record from the db
+       
+       if (response.statusCode >= 400) {
+        //if we receive a response from the server that we are unable to execute
+
+        _items.insert(existingProductIndex, existingProduct);
+        //in the case that we encounter an error we should take the record of the product that we are attempting to delete and insert that back into the list
+        
+        notifyListeners();
+        //notify all listeners that we encountered an error in the server response (the item couldn't be deleted from the db) and therefore adding it back to the list 
+
+        throw HttpException(message: 'Could not delete product');
+        //because we were unable to delete the product we are throwing an exception
+      }
+
+    existingProduct = null;
+    //if all the code above is successfully run we are deleting the cached instance of the product
+ */

@@ -12,6 +12,8 @@ class ManageProductsItem extends StatelessWidget {
   final String imageURL;
   @override
   Widget build(BuildContext context) {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    //because we are trying to call ScaffoldMessenger.of(context) within a future it doesn't know which context we are referring to and throws an error, therefore we are setting it to a local variable and then calling on that variable in the future method
     return ListTile(
       leading: CircleAvatar(
         backgroundImage: NetworkImage(imageURL),
@@ -32,9 +34,21 @@ class ManageProductsItem extends StatelessWidget {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () {
-                Provider.of<ProductsProvider>(context, listen: false)
-                    .deleteProduct(id);
+              onPressed: () async {
+                try {
+                  await Provider.of<ProductsProvider>(context, listen: false)
+                      .deleteProduct(id);
+                  //await if the delete API call can be successfully made
+                } catch (error) {
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Delete failed',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
+                }
               },
             ),
           ],
