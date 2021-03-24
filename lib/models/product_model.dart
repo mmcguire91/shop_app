@@ -31,13 +31,12 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-//Store the FAVORITE status in an API call to the db
+//toggle the status of favorite button and store the FAVORITE status in an API call to the db
   Future<void> toggleFavoriteStatus() async {
     final oldStatus = isFavorite;
     //storing the value of the old status in the case that the API call fails we may persist the old status to reflect to the user that the value has not been stored on the server
     isFavorite = !isFavorite;
     notifyListeners();
-    //toggle the status of favorite button
     final url = Uri.https('shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
         '/products/$id.json');
     //URL of the API call
