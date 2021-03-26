@@ -76,6 +76,10 @@ class ProductsProvider with ChangeNotifier {
       final response = await http.get(url);
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
       //retrieve the json response data stored in firebase, translate to a Map, and store that map in the jsonResponse variable
+      if (jsonResponse == null) {
+        return;
+      }
+      //if there is no data returned in the jsonResponse (the db is empty) then we do nothing, avoiding an app crash on an empty API call
       final List<Product> loadedProducts = [];
       //establish an empty list in preparation to store the new Product values retrieved from the API call
       jsonResponse.forEach((prodID, prodData) {

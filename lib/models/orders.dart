@@ -31,6 +31,60 @@ class Orders with ChangeNotifier {
   //make a copy of private class _orders
   //establishing so that we cannot modify the private class
 
+  bool isLoading = false;
+
+//READ API call
+  Future<void> getOrders() async {
+    final url = Uri.https(
+        'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
+    //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
+    //establish the URL where the API call will be made
+    try {
+      isLoading = true;
+      // by setting isLoading to true we are establishing a value to reference for a loading spinner when this READ API call is referenced in the orders screen
+      final response = await http.get(url);
+      // print(json.decode(response.body));
+      final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+      //retrieve the json response data stored in firebase, translate to a Map, and store that map in the jsonResponse variable
+      if (jsonResponse == null) {
+        return;
+      }
+      //if there is no data returned in the jsonResponse (the db is empty) then we do nothing, avoiding an app crash on an empty API call
+      final List<OrderItem> orderProducts = [];
+      //establish an empty list in preparation to store the new Order values retrieved from the API call
+      jsonResponse.forEach((orderID, orderData) {
+        //forEach will exectue a function on every value that is housed within that Map
+        orderProducts.insert(
+            0, //insert at index 0 inserts the newest added product at the beginning of the list
+            OrderItem(
+              id: orderID,
+              amount: orderData['amount'],
+              dateTime: DateTime.parse(orderData['dateTime']),
+              products: (orderData['products'] as List<dynamic>)
+                  .map(
+                    (item) => CartItem(
+                      id: item['id'],
+                      title: item['title'],
+                      quantity: item['quantity'],
+                      price: item['price'],
+                    ),
+                  )
+                  .toList(),
+              //since products is stored on the db as a map, we have to retrieve those values and define how the properties of the items stored in the db should be mapped --> recreating our CartItem as it's stored in the db
+            ));
+        //retrieve the values for each of the given properties and Map them according to the values stored on the server
+      });
+      _orders = orderProducts;
+      notifyListeners();
+      //set the value of the _items list - that is the primary data of the ProductsProvider to tell the different areas of the app the data to show - equal to the values retrieved from the API call
+      isLoading = false;
+      //setting isLoading to false we are noting that the API call has been made. Will be referenced in the orders screen signaling for the loading spinner to stop
+    } catch (error) {
+      print(error);
+      throw (error);
+    }
+  }
+
 //CREATE API call
   Future<void> addOrders({List<CartItem> cartProducts, double total}) async {
     //CartItem from cart.dart
