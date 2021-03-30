@@ -16,6 +16,7 @@ enum FilterOptions {
 }
 
 class CatalogDisplayScreen extends StatefulWidget {
+  static const routeName = '/catalog';
   @override
   _CatalogDisplayScreenState createState() => _CatalogDisplayScreenState();
 }

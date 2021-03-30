@@ -7,6 +7,7 @@ import './screens/cart_screen.dart';
 import './screens/order_screen.dart';
 import './screens/manage_products_screen.dart';
 import './screens/edit_products_screen.dart';
+import './screens/auth_screen.dart';
 
 import 'models/products_provider.dart';
 import 'models/cart.dart';
@@ -51,8 +52,9 @@ class ShopApp extends StatelessWidget {
           // Color.fromRGBO(192, 199, 210, 1), //grey
           fontFamily: 'Lato',
         ),
-        home: CatalogDisplayScreen(),
+        home: AuthScreen(),
         routes: {
+          CatalogDisplayScreen.routeName: (ctx) => CatalogDisplayScreen(),
           ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
           CartScreen.routeName: (ctx) => CartScreen(),
           OrdersScreen.routeName: (ctx) => OrdersScreen(),
