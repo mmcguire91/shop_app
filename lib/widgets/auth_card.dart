@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/auth.dart';
+
+//holds authentication UI and logic
 
 enum AuthMode { Signup, Login }
-
-//holds authorization logic and behavior
 
 class AuthCard extends StatefulWidget {
   const AuthCard({
@@ -23,7 +26,7 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
       return;
@@ -37,7 +40,10 @@ class _AuthCardState extends State<AuthCard> {
       // Log user in
     } //Log user in
     else {
-      //Sign user up
+      await Provider.of<Auth>(context, listen: false).signup(
+        _authData['email'],
+        _authData['password'],
+      );
     } //Sign user up
     setState(() {
       _isLoading = false;
@@ -75,6 +81,7 @@ class _AuthCardState extends State<AuthCard> {
           child: SingleChildScrollView(
             child: Column(
               children: <Widget>[
+                //E-MAIL
                 TextFormField(
                   decoration: InputDecoration(labelText: 'E-Mail'),
                   keyboardType: TextInputType.emailAddress,
@@ -88,6 +95,7 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['email'] = value;
                   },
                 ),
+                //PASSWORD
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Password'),
                   obscureText: true,
@@ -102,6 +110,7 @@ class _AuthCardState extends State<AuthCard> {
                     _authData['password'] = value;
                   },
                 ),
+                //IF the user is on Signup screen display password confirmation textfield, otherwise do not
                 if (_authMode == AuthMode.Signup)
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
@@ -128,6 +137,7 @@ class _AuthCardState extends State<AuthCard> {
                       //if the user is seeking the login page, display login button. Else display sign up button
                     ),
                     onPressed: _submit,
+                    //call the submit method
                     style: ElevatedButton.styleFrom(
                       //styleFrom is a way to implement the expected simple values opposed to establishing MaterialStateProperty states
                       shape: RoundedRectangleBorder(
@@ -147,6 +157,7 @@ class _AuthCardState extends State<AuthCard> {
                   ),
                   //if the user is on the login page then display a button to sign up. If they are on the sign up page display an option to login
                   onPressed: _switchAuthMode,
+                  //call the switchAuthMode method
                   style: TextButton.styleFrom(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 4),
