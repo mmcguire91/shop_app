@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 
 import '../models/auth.dart';
 
+import '../widgets/error_dialog.dart';
+
 //holds authentication UI and logic
 
 enum AuthMode { Signup, Login }
@@ -37,14 +39,22 @@ class _AuthCardState extends State<AuthCard> {
       _isLoading = true;
     });
     if (_authMode == AuthMode.Login) {
-      // Log user in
-    } //Log user in
-    else {
+      //USER LOGIN
+      try {
+        await Provider.of<Auth>(context, listen: false).signin(
+          _authData['email'],
+          _authData['password'],
+        );
+      } catch (error) {
+        //calling on the error that was established in the Auth class catch(error) {throw error} method in the addProduct function
+      }
+    } else {
+      //REGISTER USER
       await Provider.of<Auth>(context, listen: false).signup(
         _authData['email'],
         _authData['password'],
       );
-    } //Sign user up
+    }
     setState(() {
       _isLoading = false;
     });
@@ -112,6 +122,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 //IF the user is on Signup screen display password confirmation textfield, otherwise do not
                 if (_authMode == AuthMode.Signup)
+                  //VERIFY PASSWORD
                   TextFormField(
                     enabled: _authMode == AuthMode.Signup,
                     decoration: InputDecoration(labelText: 'Confirm Password'),
@@ -151,6 +162,7 @@ class _AuthCardState extends State<AuthCard> {
                       ),
                     ),
                   ),
+                //LOGIN or SIGN UP button
                 TextButton(
                   child: Text(
                     '${_authMode == AuthMode.Login ? 'SIGN UP' : 'LOGIN'}',
