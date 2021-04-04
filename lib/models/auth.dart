@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'http_exception.dart';
+
 //Holds authentication API calls
 
 class Auth with ChangeNotifier {
@@ -26,11 +28,19 @@ class Auth with ChangeNotifier {
           'returnSecureToken': true,
         }),
       );
-      print(json.decode(response.body));
-      print(response.statusCode);
+      final responseData = json.decode(response.body);
+      print(responseData);
+      // if (responseData['error'] != null) {
+      //   //if the API call retrieves an error
+      //   throw HttpException(
+      //     //throw custom error handling method
+      //     message: responseData['error']['message'],
+      //     //display the error message returned in the API call (the value assigned to the message within the error array)
+      //   );
+      // }
     } catch (error) {
       print(error);
-      throw (error);
+      throw error;
     }
   }
 

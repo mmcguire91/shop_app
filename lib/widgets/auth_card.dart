@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/auth.dart';
-
-import '../widgets/error_dialog.dart';
+import '../models/http_exception.dart';
 
 //holds authentication UI and logic
 
@@ -28,6 +27,28 @@ class _AuthCardState extends State<AuthCard> {
   var _isLoading = false;
   final _passwordController = TextEditingController();
 
+  //VOID function to display a dialog modal. We will use this to display a dialog modal and populate the message with whatever error message the API call returns
+  void _errorDialog({String message}) {
+    showDialog(
+      //in the case that an error occurs, by us putting the return in front of showDialog, showDialog will fulfill that Future in case of the error. If there is no error the .then will fulfill the expected Future value
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('An error occurred'),
+        content: Text(message),
+        //we will change the value of message to display according to what the API call returns
+        actions: [
+          TextButton(
+            child: Text('Okay'),
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  //SUBMIT button logic
   Future<void> _submit() async {
     if (!_formKey.currentState.validate()) {
       // Invalid!
@@ -38,22 +59,59 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       _isLoading = true;
     });
-    if (_authMode == AuthMode.Login) {
-      //USER LOGIN
-      try {
+    //ATTEMPT TO MAKE API CALLS BASED ON ENUM STATE OF DISPLAY
+    try {
+      if (_authMode == AuthMode.Login) {
+        //USER LOGIN
+        //call the sign in (read) API
         await Provider.of<Auth>(context, listen: false).signin(
           _authData['email'],
           _authData['password'],
         );
-      } catch (error) {
-        //calling on the error that was established in the Auth class catch(error) {throw error} method in the addProduct function
+      } else {
+        //REGISTER USER
+        //call the register (create) API
+        await Provider.of<Auth>(context, listen: false).signup(
+          _authData['email'],
+          _authData['password'],
+        );
       }
-    } else {
-      //REGISTER USER
-      await Provider.of<Auth>(context, listen: false).signup(
-        _authData['email'],
-        _authData['password'],
-      );
+    } on HttpException catch (error) {
+      //we are conducting a filter on the type of errors we want to handle within this block.
+      //here we are calling on the HttpException
+      var httpErrorMessage = 'Could not login or sign up.';
+      //all of the following error messages were retrieved from the Firebase Auth API documentation
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        //if the API call retrieves a value of 'EMAIL_EXISTS' in the error message
+        httpErrorMessage = 'This email is alreary in use';
+        //display the above error message
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        //if the API call retrieves a value of 'INVALID_EMAIL' in the error message
+        httpErrorMessage = 'This is not a valid email.';
+        //display the above error message
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        //if the API call retrieves a value of 'INVALID_EMAIL' in the error message
+        httpErrorMessage = 'This is not a valid email.';
+        //display the above error message
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        //if the API call retrieves a value of 'EMAIL_NOT_FOUND' in the error message
+        httpErrorMessage = 'Could not find a user with that email.';
+        //display the above error message
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        //if the API call retrieves a value of 'INVALID_PASSWORD' in the error message
+        httpErrorMessage = 'Invalid password.';
+        //display the above error message
+      }
+      _errorDialog(message: httpErrorMessage);
+      //call the error dialog method
+      //display in the message whatever defined message to display according to the API error response
+    } catch (error) {
+      //calling on the error that was established in the Auth class catch(error) {throw error} method in the addProduct function
+      const errorMessage =
+          'Experiencing network difficulties. Please try again';
+      _errorDialog(message: errorMessage);
+      //call the error dialog method
+      //display in the message whatever defined message to display according to the API error response
     }
     setState(() {
       _isLoading = false;
