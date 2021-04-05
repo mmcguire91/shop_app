@@ -77,17 +77,14 @@ class _AuthCardState extends State<AuthCard> {
         );
       }
     } on HttpException catch (error) {
+      //TODO: This is not properly receiving the error response from the Auth file
       //we are conducting a filter on the type of errors we want to handle within this block.
-      //here we are calling on the HttpException
+      //here we are calling on the HttpException that was thrown in the _authenticate method in Auth
       var httpErrorMessage = 'Could not login or sign up.';
       //all of the following error messages were retrieved from the Firebase Auth API documentation
       if (error.toString().contains('EMAIL_EXISTS')) {
         //if the API call retrieves a value of 'EMAIL_EXISTS' in the error message
         httpErrorMessage = 'This email is alreary in use';
-        //display the above error message
-      } else if (error.toString().contains('INVALID_EMAIL')) {
-        //if the API call retrieves a value of 'INVALID_EMAIL' in the error message
-        httpErrorMessage = 'This is not a valid email.';
         //display the above error message
       } else if (error.toString().contains('INVALID_EMAIL')) {
         //if the API call retrieves a value of 'INVALID_EMAIL' in the error message

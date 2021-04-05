@@ -29,17 +29,20 @@ class Auth with ChangeNotifier {
         }),
       );
       final responseData = json.decode(response.body);
-      print(responseData);
-      // if (responseData['error'] != null) {
-      //   //if the API call retrieves an error
-      //   throw HttpException(
-      //     //throw custom error handling method
-      //     message: responseData['error']['message'],
-      //     //display the error message returned in the API call (the value assigned to the message within the error array)
-      //   );
-      // }
+      //TODO: This is not properly passing over the HttpException error response to AuthCard
+      if (responseData['error'] != null) {
+        //if the API call retrieves an error
+        throw HttpException(
+          //throw custom error handling method
+          message: responseData['error']['message'],
+          //display the error message returned in the API call (the value assigned to the message within the error array)
+        );
+        //in the case that the API response returns an error, we are handling this as an HttpException
+        //when we are throwing that HttpException, we are populating it with the values from the message within the error API response
+        //we are going to try to call on this in the Auth Card
+      }
     } catch (error) {
-      print(error);
+      // print(error);
       throw error;
     }
   }
