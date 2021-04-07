@@ -46,25 +46,32 @@ class ShopApp extends StatelessWidget {
       - using .value here could lead to unnecessary re-renders or bugs
       - when you want to create a new instance of the object use the default builder / create method
       */
-      child: MaterialApp(
-        title: 'Flutter Shop',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.blue,
-          // Color.fromRGBO(134, 232, 118, 1), similar to mint green
-          accentColor: Colors.white,
-          // Color.fromRGBO(192, 199, 210, 1), //grey
-          fontFamily: 'Lato',
+      child: Consumer<Auth>(
+        builder: (ctx, authData, _) => MaterialApp(
+          //setting up the MaterialApp within a Consumer to update everytime the Auth class has an update
+          //authData is how we will be referring to the Auth class
+          title: 'Flutter Shop',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.blue,
+            // Color.fromRGBO(134, 232, 118, 1), similar to mint green
+            accentColor: Colors.white,
+            // Color.fromRGBO(192, 199, 210, 1), //grey
+            fontFamily: 'Lato',
+          ),
+          home: authData.isAuthValid ? CatalogDisplayScreen() : AuthScreen(),
+          //call on the method isAuthValid in the Auth file to determine if it meets the criteria established within the method.
+          //If it meets the criteria of the isAuthValid method, disaplay CatalogDisplayScreen()
+          //If it does not meet the criteria of the isAuthValid method, disaplay AuthScreen()
+          routes: {
+            CatalogDisplayScreen.routeName: (ctx) => CatalogDisplayScreen(),
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
+            EditProductsScreen.routeName: (ctx) => EditProductsScreen(),
+          },
         ),
-        home: AuthScreen(),
-        routes: {
-          CatalogDisplayScreen.routeName: (ctx) => CatalogDisplayScreen(),
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          ManageProductsScreen.routeName: (ctx) => ManageProductsScreen(),
-          EditProductsScreen.routeName: (ctx) => EditProductsScreen(),
-        },
       ),
     );
   }
