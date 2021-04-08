@@ -76,7 +76,9 @@ class _AuthCardState extends State<AuthCard> {
           _authData['password'],
         );
       }
-    } on HttpException catch (error) {
+    }
+    /*
+    on HttpException catch (error) {
       //TODO: This is not properly receiving the error response from the Auth file
       //we are conducting a filter on the type of errors we want to handle within this block.
       //here we are calling on the HttpException that was thrown in the _authenticate method in Auth
@@ -102,7 +104,9 @@ class _AuthCardState extends State<AuthCard> {
       _errorDialog(message: httpErrorMessage);
       //call the error dialog method
       //display in the message whatever defined message to display according to the API error response
-    } catch (error) {
+    }
+    */
+    catch (error) {
       //calling on the error that was established in the Auth class catch(error) {throw error} method in the addProduct function
       const errorMessage =
           'Experiencing network difficulties. Please try again';

@@ -12,42 +12,14 @@ import 'dart:convert';
 //products_prodvider.dart holds all data and provides it to the listeners
 
 class ProductsProvider with ChangeNotifier {
-  List<Product> _items = [
-/*
-    Product(
-      id: 'p1',
-      title: 'Red Shirt',
-      description: 'A red shirt - it is pretty red!',
-      price: 29.99,
-      imageURL:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
-    Product(
-      id: 'p2',
-      title: 'Not Levi\'s jeans',
-      description: 'A nice pair of trousers.',
-      price: 59.99,
-      imageURL:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Yellow Scarf',
-      description: 'Warm and cozy - exactly what you need for the winter.',
-      price: 19.99,
-      imageURL:
-          'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    ),
-    Product(
-      id: 'p4',
-      title: 'Cast Iron Skillet',
-      description: 'Prepare any meal you want.',
-      price: 49.99,
-      imageURL:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
-    */
-  ];
+  ProductsProvider({this.authToken, List<Product> itemsPrivate})
+      : _items = itemsPrivate;
+  //in order to use the named parameters on a private class, we can't use the this.variable syntax
+  //--> this._items throws error "Named option parameters can't start with an underscore.""
+  //--> instead we have to name and initialize a new variable of the same type and then outside the brackets assign the private class to the initialized, named class
+  final String authToken;
+
+  List<Product> _items = [];
   //made private class because we do not want these items to be editable
 
   List<Product> get items {
@@ -68,10 +40,11 @@ class ProductsProvider with ChangeNotifier {
 
 //READ API call
   Future<void> getProducts() async {
-    final url = Uri.https(
-        'shop-app-flutter-49ad1-default-rtdb.firebaseio.com', '/products.json');
+    final url = Uri.https('shop-app-flutter-49ad1-default-rtdb.firebaseio.com',
+        '/products.json?auth=$authToken');
     //note that for the post URL when using this https package we had to remove the special characters (https://) in order to properly post via the API
     //establish the URL where the API call will be made
+    //?auth=$authToken is a query to determine which user logging into the app (vid the authentication token associated with their last login) in order to determine what to display to the user based on their own interaction with the app
     try {
       final response = await http.get(url);
       final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
