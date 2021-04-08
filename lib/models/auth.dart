@@ -45,8 +45,6 @@ class Auth with ChangeNotifier {
         }),
       );
       final responseData = json.decode(response.body);
-      /*
-      //TODO: This is not properly passing over the HttpException error response to AuthCard
       if (responseData['error'] != null) {
         //if the API call retrieves an error
         throw HttpException(
@@ -58,7 +56,7 @@ class Auth with ChangeNotifier {
         //when we are throwing that HttpException, we are populating it with the values from the message within the error API response
         //we are going to try to call on this in the Auth Card
       }
-      // */
+
       _token = responseData['idToken'];
       //A Firebase Auth ID token for the authenticated user. (from Firebase REST API documentation)
       _userID = responseData['localId'];
@@ -79,12 +77,13 @@ class Auth with ChangeNotifier {
     } catch (error) {
       // print(error);
       throw error;
+      // return Future.error(error);
     }
   }
 
   //AUTHENTICATION CREATE API call - Register user
   Future<void> signup(String email, String password) async {
-    _authenticate(
+    return _authenticate(
       email: email,
       password: password,
       urlSegment: 'signUp',
@@ -93,7 +92,7 @@ class Auth with ChangeNotifier {
 
 //AUTHENTICATION READ API call - user sign in
   Future<void> signin(String email, String password) async {
-    _authenticate(
+    return _authenticate(
       email: email,
       password: password,
       urlSegment: 'signInWithPassword',
