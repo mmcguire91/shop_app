@@ -56,7 +56,6 @@ class Auth with ChangeNotifier {
         //when we are throwing that HttpException, we are populating it with the values from the message within the error API response
         //we are going to try to call on this in the Auth Card
       }
-
       _token = responseData['idToken'];
       //A Firebase Auth ID token for the authenticated user. (from Firebase REST API documentation)
       _userID = responseData['localId'];
@@ -68,16 +67,14 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
-      // print(responseData);
+      print(responseData);
       /*for _tokenExpirationDate we don't receive an exact value to translate that easily within the API response
       to compensate for no value returned in the API response we call on the value that is provided to us in the API response ['expiresIn']
       once we retrieve that value ['expiresIn'] we have to translate that into a method by setting that to the current DateTime and adding the time until the token expires
       this ensures the variable _tokenExpirationDate is still valid
       */
     } catch (error) {
-      // print(error);
       throw error;
-      // return Future.error(error);
     }
   }
 
