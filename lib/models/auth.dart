@@ -67,7 +67,7 @@ class Auth with ChangeNotifier {
           ),
         ),
       );
-      print(responseData);
+      notifyListeners();
       /*for _tokenExpirationDate we don't receive an exact value to translate that easily within the API response
       to compensate for no value returned in the API response we call on the value that is provided to us in the API response ['expiresIn']
       once we retrieve that value ['expiresIn'] we have to translate that into a method by setting that to the current DateTime and adding the time until the token expires
